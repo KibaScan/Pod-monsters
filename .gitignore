@@ -1,0 +1,28 @@
+# OS metadata
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.AppleDouble
+.LSOverride
+
+# Swift / Xcode PM
+.build/
+build/
+DerivedData/
+.swiftpm/xcode/
+.swiftpm/configuration/
+*.xcodeproj/
+*.xcworkspace/
+*.xcscheme
+xcuserdata/
+
+# Local logs and test files
+*.log
+test_output.txt
+test_output*.txt
+test_run.log
+
+# Internal agent/cli directories if they shouldn't be tracked
+.agents/
+.antigravitycli/
