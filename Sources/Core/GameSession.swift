@@ -215,7 +215,7 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
     }
     
     public func releaseBuddy(_ monster: Monster) throws {
-        guard var buddy = self.equippedBuddy else {
+        guard let buddy = self.equippedBuddy else {
             throw SessionError.noBuddyEquipped
         }
         
