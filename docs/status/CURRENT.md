@@ -2,19 +2,24 @@
 
 ## Rolling Session Log
 
-### Last Session (Current) — 2026-05-26T15:53:13Z
-- **Files changed this session**: Initialized reference status documents (`GEMINI.md`, `docs/status/CURRENT.md`, `docs/DECISIONS.md`) and started skills migration.
+### Last Session (Current) — 2026-05-26T19:28:00Z
+- **Files changed this session**: Deployed custom skills in `skills/`, `skills/check-numbers/scripts/secret_scan.sh`, `GEMINI.md`, `mcp.json`, `docs/status/CURRENT.md`, `docs/DECISIONS.md`, `ORIGINAL_REQUEST.md`.
+- **Accomplished**:
+  - Deployed 6 native Antigravity Skills (`boot`, `check-numbers`, `code-review`, `handoff`, `milestone-close`, `pre-launch-checklist`).
+  - Implemented the automated `secret_scan.sh` git pre-push/pre-commit scanner script.
+  - Created a project-scoped `mcp.json` for simulating CoreMotion and biomes offline.
+  - Verified and pushed all deliverables successfully with zero warnings or errors.
+- **What's not done yet**: None. All Phase 0/Phase 1 milestones are successfully achieved.
+- **Next steps**: Developers should register the hooks (`ln -sf ../../skills/check-numbers/scripts/secret_scan.sh .git/hooks/pre-push`).
+- **Gotchas & Context**: The pre-launch checklist will block release runs if any `🔴` items are left under `## Launch Blockers` in `docs/status/CURRENT.md`.
+
+### Previous Session
+- **Files changed**: `GEMINI.md`, `docs/status/CURRENT.md`, `docs/DECISIONS.md`.
 - **Accomplished**:
   - Ran reconnaissance to verify Swift compilation and test execution. Found all 151 tests pass successfully with 0 failures and 3 warnings.
   - Documented strict concurrency compilation rules and guidelines.
-- **What's not done yet**: Skill migration from raw text commands (`commands/`) to optimized `skills/` folders, writing check-numbers execution script.
-- **Next steps**: Complete the migration of `/boot`, `/handoff`, and PR review skills. Integrate freshness scripting.
-- **Gotchas & Context**: 21 expected CoreMotion availability fallback logs when running tests on non-iOS environments. Watch out for strict concurrency warnings in `WorkoutTests.swift:147`.
+- **What's not done yet**: Skill migration from raw text commands (`commands/`) to optimized `skills/` folders.
 
-### Previous Session
-- **Files changed**: `Sources/Core/GameSession.swift`, `Sources/Services/AirPodsMotionManager.swift`, `Sources/Services/WorkoutRepRestManager.swift`, `Tests/PodMonstersTests/WorkoutTests.swift`
-- **Accomplished**: Modernized concurrency by removing manual thread locks, implemented dynamic starters evolution checked upon drip XP, created SHA-256 validation persist wrapper, added Preview agent headphone crash intercepter, and calibrated slide attitude movement stillness score simulator.
-- **What's not done yet**: Workspace status tracking, text instruction optimization.
 
 ## Numbers
 - **Total Tests**: 151
