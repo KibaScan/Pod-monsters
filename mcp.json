@@ -1,0 +1,32 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/config.json",
+  "mcpServers": {
+    "weather-mock-service": {
+      "command": "node",
+      "args": [
+        "scripts/weather_mock_server.js"
+      ],
+      "env": {
+        "PORT": "4567",
+        "DEFAULT_BIOME": "temperate_forest",
+        "DEFAULT_PRECIPITATION": "rainy",
+        "DEFAULT_TEMPERATURE": "18.5"
+      },
+      "description": "Local weather mock service simulating biomes, temperature, and precipitation triggers. Required for simulating biomes and testing WeatherKit fallback scenarios (e.g., Tempest weather triggers) without real-world developer account entitlement requirements.",
+      "disabled": false
+    },
+    "headphone-motion-generator": {
+      "command": "python3",
+      "args": [
+        "scripts/headphone_motion_generator.py"
+      ],
+      "env": {
+        "PORT": "4568",
+        "FREQUENCY_HZ": "50",
+        "STILLNESS_THRESHOLD": "0.1"
+      },
+      "description": "Headphone motion coordinate generator supporting AirPods simulation inputs. Generates attitude data (pitch, roll, yaw) and stillness score deltas to physically simulate head carriage movements, active workouts, and sensor frequency throttling rules (e.g. motionSampleInterval limits).",
+      "disabled": false
+    }
+  }
+}
