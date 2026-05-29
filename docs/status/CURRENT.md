@@ -2,8 +2,20 @@
 
 ## Rolling Session Log
 
-### Last Session (Current) — 2026-05-29T17:03:00Z
-- **Files changed this session**: `ROADMAP.md`, `docs/WORKFLOW.md`, `phase-a-agent-prompts.md`, `phase-b-agent-prompts.md`, `.github/workflows/ci.yml`, `docs/DECISIONS.md`.
+### Last Session (Current) — 2026-05-29T17:17:00Z
+- **Files changed this session**: `docs/status/CURRENT.md`.
+- **Accomplished**:
+  - Executed `/boot` workspace initialization and context briefing skill.
+  - Ran the automated freshness check and identified/resolved a minor stats drift in `CURRENT.md` (decision count updated from 4 to 5 to match `docs/DECISIONS.md`).
+  - Formally integrated previously untracked documents (`ROADMAP.md`, `docs/WORKFLOW.md`, agent prompts, CI workflow, and `D-05` naming block) into the session log.
+  - Placed a complete context briefing report in the `workspace_init_summary.md` artifact.
+  - Executed the `/handoff` closing process, preserving a clean two-session log window.
+- **What's not done yet**: None.
+- **Next steps**: Symlink local git pre-commit/pre-push hooks and launch the `M-A0.5: Podmon Rename (Solo Refactor)` milestone.
+- **Gotchas & Context**: Standardizing vocabulary to `Podmon` is critical before implementing new Phase 1 modules to ensure consistent typing.
+
+### Previous Session — 2026-05-29T17:03:00Z
+- **Files changed**: `ROADMAP.md`, `docs/WORKFLOW.md`, `phase-a-agent-prompts.md`, `phase-b-agent-prompts.md`, `.github/workflows/ci.yml`, `docs/DECISIONS.md`.
 - **Accomplished**:
   - Document Integration: Placed `ROADMAP.md` and agent prompts in the repository root, `docs/WORKFLOW.md` under `docs/`, and `ci.yml` CI configuration under `.github/workflows/`.
   - Architectural Log: Appended `D-05: Naming & Vocabulary` block to `docs/DECISIONS.md` standardizing "Podmon" terminology and "Pod-dex" collection screen name.
@@ -11,19 +23,6 @@
   - Validation: Confirmed green baseline of 151 passing unit tests (0 failures).
   - GitHub Branch Protection Setup: Configured protection rules on `main` branch enforcing `swift test` status check before merging, branch up-to-date enforcement (strict: true), and blocking direct pushes to `main`.
   - Committed all changes cleanly to `main` branch.
-- **What's not done yet**: None.
-- **Next steps**: Symlink local git hooks and begin milestone `M-A0.5: Podmon Rename (Solo Refactor)`.
-- **Gotchas & Context**: Main branch is now protected; all future integrations must proceed via PRs with passing CI checks.
-
-### Previous Session — 2026-05-26T20:35:00Z
-- **Files changed**: `Sources/Core/GameSession.swift`, `Sources/Services/FishingEngine.swift`.
-- **Accomplished**:
-  - Refactored `FishingEngine.swift` to remove the redundant `updateOnMainThread` queue-jumping helper and its usages of `DispatchQueue.main.sync`, relying purely on native Swift `@MainActor` actor isolation for thread-safety.
-  - Resolved compiler warnings in `GameSession.swift` (variable `buddy` changed from `var` to `let`).
-  - Successfully verified strict concurrency (`-strict-concurrency=complete`) and ran all 151 tests with 100% green results.
-- **What's not done yet**: None. All active items are complete.
-- **Next steps**: Symlink the git pre-commit and pre-push hooks locally for continuous validation.
-- **Gotchas & Context**: Ensure any new classes/services that interact with UI or delegates maintain full `@MainActor` isolation.
 
 
 ## Numbers
