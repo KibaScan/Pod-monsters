@@ -60,8 +60,8 @@ final class FishingTests: XCTestCase {
         engine.setHook()
         
         let expectation = self.expectation(description: "Capture success callback")
-        engine.captureSuccessCallback = { monster in
-            XCTAssertEqual(monster.faction, .kinetic)
+        engine.captureSuccessCallback = { podmon in
+            XCTAssertEqual(podmon.faction, .kinetic)
             expectation.fulfill()
         }
         
@@ -312,9 +312,9 @@ final class FishingTests: XCTestCase {
             engine.setHook()
             
             let expectation = self.expectation(description: "Capture in \(biome) with \(bait)")
-            engine.captureSuccessCallback = { monster in
-                XCTAssertEqual(monster.name, expectedName, "Failed on \(biome) + \(bait)")
-                XCTAssertEqual(monster.faction, expectedFaction, "Failed on \(biome) + \(bait)")
+            engine.captureSuccessCallback = { podmon in
+                XCTAssertEqual(podmon.name, expectedName, "Failed on \(biome) + \(bait)")
+                XCTAssertEqual(podmon.faction, expectedFaction, "Failed on \(biome) + \(bait)")
                 expectation.fulfill()
             }
             
@@ -338,9 +338,9 @@ final class FishingTests: XCTestCase {
         engine.setHook()
         
         let expectation = self.expectation(description: "Capture with currentBiome")
-        engine.captureSuccessCallback = { monster in
-            XCTAssertEqual(monster.name, "Concrete Golem")
-            XCTAssertEqual(monster.faction, .forge)
+        engine.captureSuccessCallback = { podmon in
+            XCTAssertEqual(podmon.name, "Concrete Golem")
+            XCTAssertEqual(podmon.faction, .forge)
             expectation.fulfill()
         }
         

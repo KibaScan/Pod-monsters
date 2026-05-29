@@ -10,8 +10,8 @@ public enum BaitError: Error, Equatable {
 
 public enum SessionError: Error, Equatable {
     case activeWorkoutConflict
-    case noBuddyEquipped
-    case monsterNotFound
+    case noPodmonEquipped
+    case podmonNotFound
 }
 
 public enum SerializationError: Error, Equatable {
@@ -20,13 +20,13 @@ public enum SerializationError: Error, Equatable {
 }
 
 public protocol GameSessionDelegate: AnyObject {
-    func gameSession(_ session: GameSession, didEvolveMonster monster: Monster, from oldMonster: Monster)
+    func gameSession(_ session: GameSession, didEvolvePodmon podmon: Podmon, from oldPodmon: Podmon)
 }
 
 public struct GameSessionState: Codable {
-    public let equippedBuddy: Monster?
+    public let equippedPodmon: Podmon?
     public let baitInventory: [BaitType: Int]
-    public let capturedMonsters: [Monster]
+    public let capturedPodmons: [Podmon]
     public let isSubscriber: Bool
 }
 
@@ -37,9 +37,9 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
     @Published public var fishingEngine: FishingEngine
     @Published public var workoutManager: WorkoutRepRestManager
     
-    @Published public var equippedBuddy: Monster?
+    @Published public var equippedPodmon: Podmon?
     @Published public var baitInventory: [BaitType: Int] = [:]
-    @Published public var capturedMonsters: [Monster] = []
+    @Published public var capturedPodmons: [Podmon] = []
     @Published public var isSubscriber: Bool = false
     
     public weak var delegate: GameSessionDelegate?
@@ -91,11 +91,11 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
         baitInventory[.masterLures] = 0
         
         // Setup fishing callbacks
-        self.fishingEngine.captureSuccessCallback = { [weak self] monster in
+        self.fishingEngine.captureSuccessCallback = { [weak self] podmon in
             guard let self = self else { return }
-            self.capturedMonsters.append(monster)
-            if let faction = self.equippedBuddy?.faction {
-                self.addXPToBuddy(GameConstants.captureSuccessXP, activityType: faction)
+            self.capturedPodmons.append(podmon)
+            if let faction = self.equippedPodmon?.faction {
+                self.addXPToPodmon(GameConstants.captureSuccessXP, activityType: faction)
             }
         }
         
@@ -116,17 +116,17 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
     }
     
     public func motionManager(_ manager: AirPodsMotionManager, didUpdateHeadCarriage pitchAngleFromGravity: Double) {
-        guard self.equippedBuddy != nil else { return }
+        guard self.equippedPodmon != nil else { return }
         
         let pitchErr = abs(pitchAngleFromGravity)
         if pitchErr < GameConstants.postureGoodAngle {
             // Good posture drips postureGoodXP Kinetic XP
-            self.addXPToBuddy(GameConstants.postureGoodXP, activityType: .kinetic)
+            self.addXPToPodmon(GameConstants.postureGoodXP, activityType: .kinetic)
         } else if pitchErr >= GameConstants.postureExtremeAngle {
             // Extreme deviation halts XP drip completely (do nothing)
         } else {
             // Intermediate deviation drips degraded XP
-            self.addXPToBuddy(GameConstants.postureDegradedXP, activityType: .kinetic)
+            self.addXPToPodmon(GameConstants.postureDegradedXP, activityType: .kinetic)
         }
     }
     
@@ -135,22 +135,22 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
         self.fishingEngine.currentBiome = self.biomeScanner.currentState?.type ?? .neutral
     }
     
-    private func addXPToBuddy(_ amount: Double, activityType: Faction) {
-        guard var buddy = equippedBuddy else { return }
-        let oldBuddy = buddy
-        buddy.addXP(amount, activityType: activityType)
-        equippedBuddy = buddy
+    private func addXPToPodmon(_ amount: Double, activityType: Faction) {
+        guard var podmon = equippedPodmon else { return }
+        let oldPodmon = podmon
+        podmon.addXP(amount, activityType: activityType)
+        equippedPodmon = podmon
         
-        if let evolved = buddy.checkEvolution() {
-            equippedBuddy = evolved
+        if let evolved = podmon.checkEvolution() {
+            equippedPodmon = evolved
             // Persist changes
             try? saveToFile()
             // Trigger delegate/notification event
-            delegate?.gameSession(self, didEvolveMonster: evolved, from: oldBuddy)
+            delegate?.gameSession(self, didEvolvePodmon: evolved, from: oldPodmon)
             NotificationCenter.default.post(
-                name: .monsterDidEvolve,
+                name: .podmonDidEvolve,
                 object: self,
-                userInfo: ["monster": evolved, "oldMonster": oldBuddy]
+                userInfo: ["podmon": evolved, "oldPodmon": oldPodmon]
             )
         }
     }
@@ -197,7 +197,7 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
     public func performWorkoutRep(quality: Double, duration: Double = 2.0) {
         self.workoutManager.performRep(quality: quality, duration: duration)
         if self.workoutManager.currentState == .activeSet && duration > 0 {
-            self.addXPToBuddy(10.0 * quality, activityType: .forge)
+            self.addXPToPodmon(10.0 * quality, activityType: .forge)
         }
     }
     
@@ -214,19 +214,19 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
         self.fishingEngine.castLine(bait: bait)
     }
     
-    public func releaseBuddy(_ monster: Monster) throws {
-        guard let buddy = self.equippedBuddy else {
-            throw SessionError.noBuddyEquipped
+    public func releasePodmon(_ podmon: Podmon) throws {
+        guard let equipped = self.equippedPodmon else {
+            throw SessionError.noPodmonEquipped
         }
         
-        guard let index = self.capturedMonsters.firstIndex(where: { $0.id == monster.id }) else {
-            throw SessionError.monsterNotFound
+        guard let index = self.capturedPodmons.firstIndex(where: { $0.id == podmon.id }) else {
+            throw SessionError.podmonNotFound
         }
         
-        self.capturedMonsters.remove(at: index)
+        self.capturedPodmons.remove(at: index)
         
-        // Channel essence: Add huge XP matching the buddy's faction
-        self.addXPToBuddy(GameConstants.releaseBuddyXP, activityType: buddy.faction)
+        // Channel essence: Add huge XP matching the equipped podmon's faction
+        self.addXPToPodmon(GameConstants.releasePodmonXP, activityType: equipped.faction)
     }
     
     // MARK: - State Serialization
@@ -244,9 +244,9 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
     
     public func saveToFile() throws {
         let state = GameSessionState(
-            equippedBuddy: self.equippedBuddy,
+            equippedPodmon: self.equippedPodmon,
             baitInventory: self.baitInventory,
-            capturedMonsters: self.capturedMonsters,
+            capturedPodmons: self.capturedPodmons,
             isSubscriber: self.isSubscriber
         )
         self.lastSavedState = state
@@ -299,9 +299,9 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
     
     public func restoreState(from data: Data) throws {
         let state = try JSONDecoder().decode(GameSessionState.self, from: data)
-        self.equippedBuddy = state.equippedBuddy
+        self.equippedPodmon = state.equippedPodmon
         self.baitInventory = state.baitInventory
-        self.capturedMonsters = state.capturedMonsters
+        self.capturedPodmons = state.capturedPodmons
         self.isSubscriber = state.isSubscriber
         self.lastSavedState = state
     }
@@ -317,14 +317,14 @@ public class GameSession: ObservableObject, AirPodsMotionManagerDelegate {
             print("Failed to reload from file on foreground: \(error)")
         }
         if let last = self.lastSavedState {
-            self.equippedBuddy = last.equippedBuddy
+            self.equippedPodmon = last.equippedPodmon
             self.baitInventory = last.baitInventory
-            self.capturedMonsters = last.capturedMonsters
+            self.capturedPodmons = last.capturedPodmons
             self.isSubscriber = last.isSubscriber
         }
     }
 }
 
 extension Notification.Name {
-    public static let monsterDidEvolve = Notification.Name("monsterDidEvolve")
+    public static let podmonDidEvolve = Notification.Name("podmonDidEvolve")
 }

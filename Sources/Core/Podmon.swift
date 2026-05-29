@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Monster: Identifiable, Codable, Equatable {
+public struct Podmon: Identifiable, Codable, Equatable {
     public let id: UUID
     public var name: String
     public var faction: Faction
@@ -61,8 +61,8 @@ public struct Monster: Identifiable, Codable, Equatable {
     }
     
     // Starter templates
-    public static func zephyr() -> Monster {
-        return Monster(
+    public static func zephyr() -> Podmon {
+        return Podmon(
             name: "Zephyr",
             faction: .kinetic,
             level: 1,
@@ -82,8 +82,8 @@ public struct Monster: Identifiable, Codable, Equatable {
         )
     }
     
-    public static func basalt() -> Monster {
-        return Monster(
+    public static func basalt() -> Podmon {
+        return Podmon(
             name: "Basalt",
             faction: .forge,
             level: 1,
@@ -103,8 +103,8 @@ public struct Monster: Identifiable, Codable, Equatable {
         )
     }
     
-    public static func lumina() -> Monster {
-        return Monster(
+    public static func lumina() -> Podmon {
+        return Podmon(
             name: "Lumina",
             faction: .aether,
             level: 1,
@@ -187,7 +187,7 @@ public struct Monster: Identifiable, Codable, Equatable {
         }
     }
     
-    public func checkEvolution() -> Monster? {
+    public func checkEvolution() -> Podmon? {
         guard level >= 10 else { return nil }
         guard name == "Zephyr" || name == "Basalt" || name == "Lumina" else { return nil }
         

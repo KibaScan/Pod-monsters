@@ -13,18 +13,18 @@ final class GameSessionTests: XCTestCase {
         XCTAssertNotNil(session.biomeScanner)
         XCTAssertNotNil(session.fishingEngine)
         XCTAssertNotNil(session.workoutManager)
-        XCTAssertNil(session.equippedBuddy)
+        XCTAssertNil(session.equippedPodmon)
         XCTAssertEqual(session.baitInventory[.ironHooks], 5)
     }
     
-    func testT1_F7_02_EquippedBuddyTracking() {
+    func testT1_F7_02_EquippedPodmonTracking() {
         let session = GameSession()
-        let buddy = Monster(name: "Zephyr", faction: .kinetic)
-        session.equippedBuddy = buddy
+        let podmon = Podmon(name: "Zephyr", faction: .kinetic)
+        session.equippedPodmon = podmon
         
         session.workoutManager.startWorkout()
         session.performWorkoutRep(quality: 1.0)
-        XCTAssertGreaterThan(session.equippedBuddy?.xp ?? 0, 0.0)
+        XCTAssertGreaterThan(session.equippedPodmon?.xp ?? 0, 0.0)
     }
     
     func testT1_F7_03_UIBindingUpdates() {
@@ -47,32 +47,32 @@ final class GameSessionTests: XCTestCase {
     
     func testT1_F7_04_PostureDripAccumulation() {
         let session = GameSession()
-        let buddy = Monster(name: "Zephyr", faction: .kinetic)
-        session.equippedBuddy = buddy
+        let podmon = Podmon(name: "Zephyr", faction: .kinetic)
+        session.equippedPodmon = podmon
         
         // Calibration delta updates DO NOT trigger posture XP drips anymore
         session.motionManager(session.motionManager, didUpdateCalibrationDelta: 0.0, pitchDelta: 5.0)
-        XCTAssertEqual(session.equippedBuddy?.xp ?? 0.0, 0.0)
+        XCTAssertEqual(session.equippedPodmon?.xp ?? 0.0, 0.0)
         
         // Reference reset calls (e.g. calibrateReferenceAngle()) DO NOT trigger posture XP drips anymore
         session.motionManager.calibrateReferenceAngle()
-        XCTAssertEqual(session.equippedBuddy?.xp ?? 0.0, 0.0)
+        XCTAssertEqual(session.equippedPodmon?.xp ?? 0.0, 0.0)
         
         // Good posture (pitch 5.0) -> drips XP
         session.motionManager(session.motionManager, didUpdateHeadCarriage: 5.0)
-        XCTAssertGreaterThan(session.equippedBuddy?.xp ?? 0, 0.0)
+        XCTAssertGreaterThan(session.equippedPodmon?.xp ?? 0, 0.0)
     }
     
-    func testT1_F7_05_ReleaseBuddyXPBoost() {
+    func testT1_F7_05_ReleasePodmonXPBoost() {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Zephyr", faction: .kinetic)
+        session.equippedPodmon = Podmon(name: "Zephyr", faction: .kinetic)
         
-        let wild = Monster(name: "Wild Basalt", faction: .forge)
-        session.capturedMonsters.append(wild)
-        XCTAssertNoThrow(try session.releaseBuddy(wild))
+        let wild = Podmon(name: "Wild Basalt", faction: .forge)
+        session.capturedPodmons.append(wild)
+        XCTAssertNoThrow(try session.releasePodmon(wild))
         
-        // Essence routes 500 XP to active buddy!
-        XCTAssertEqual(session.equippedBuddy?.level, 6) // flat 100 XP per level: 500 XP brings level from 1 to 6
+        // Essence routes 500 XP to active podmon!
+        XCTAssertEqual(session.equippedPodmon?.level, 6) // flat 100 XP per level: 500 XP brings level from 1 to 6
     }
     
     // MARK: - F7 Tier 2
@@ -80,20 +80,20 @@ final class GameSessionTests: XCTestCase {
     func testT2_F7_01_EmptyGameSession() {
         let session = GameSession()
         
-        // Actions that require equipped buddy should throw or fail gracefully
-        let wild = Monster(name: "Wild Basalt", faction: .forge)
-        XCTAssertThrowsError(try session.releaseBuddy(wild)) { error in
-            XCTAssertEqual(error as? SessionError, .noBuddyEquipped)
+        // Actions that require equipped podmon should throw or fail gracefully
+        let wild = Podmon(name: "Wild Basalt", faction: .forge)
+        XCTAssertThrowsError(try session.releasePodmon(wild)) { error in
+            XCTAssertEqual(error as? SessionError, .noPodmonEquipped)
         }
     }
     
     func testT2_F7_02_ExtremePostureDeviations() {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Zephyr", faction: .kinetic)
+        session.equippedPodmon = Podmon(name: "Zephyr", faction: .kinetic)
         
         // Extreme posture (pitch 50.0) -> no drip
         session.motionManager(session.motionManager, didUpdateHeadCarriage: 50.0)
-        XCTAssertEqual(session.equippedBuddy?.xp, 0.0)
+        XCTAssertEqual(session.equippedPodmon?.xp, 0.0)
     }
     
     func testT2_F7_03_DualActiveWorkouts() {
@@ -112,7 +112,7 @@ final class GameSessionTests: XCTestCase {
     func testT2_F7_04_FastSessionSaveRestore() {
         let session = GameSession()
         session.isSubscriber = true
-        session.equippedBuddy = Monster(name: "Lumina", faction: .aether)
+        session.equippedPodmon = Podmon(name: "Lumina", faction: .aether)
         session.baitInventory[.ironHooks] = 12
         
         let data = session.saveState()
@@ -121,25 +121,25 @@ final class GameSessionTests: XCTestCase {
         let newSession = GameSession()
         XCTAssertNoThrow(try newSession.restoreState(from: data))
         
-        XCTAssertEqual(newSession.equippedBuddy?.name, "Lumina")
+        XCTAssertEqual(newSession.equippedPodmon?.name, "Lumina")
         XCTAssertEqual(newSession.baitInventory[.ironHooks], 12)
         XCTAssertTrue(newSession.isSubscriber)
     }
     
     func testT2_F7_05_BackgroundTaskInterruption() {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Zephyr", faction: .kinetic)
+        session.equippedPodmon = Podmon(name: "Zephyr", faction: .kinetic)
         session.baitInventory[.ironHooks] = 20
         
         session.appDidEnterBackground()
         
         // Modify session state in background (simulated)
-        session.equippedBuddy = nil
+        session.equippedPodmon = nil
         
         // Restore
         session.appWillEnterForeground()
         
-        XCTAssertEqual(session.equippedBuddy?.name, "Zephyr")
+        XCTAssertEqual(session.equippedPodmon?.name, "Zephyr")
         XCTAssertEqual(session.baitInventory[.ironHooks], 20)
     }
     
@@ -147,7 +147,7 @@ final class GameSessionTests: XCTestCase {
     
     func testT3_COMB_01_StrengthToFishingBaitCycle() {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Basalt", faction: .forge)
+        session.equippedPodmon = Podmon(name: "Basalt", faction: .forge)
         session.baitInventory[.ironHooks] = 0
         
         // Complete strength reps and crack shield
@@ -256,20 +256,20 @@ final class GameSessionTests: XCTestCase {
         session.workoutManager.shieldDurability = 0.0
         session.workoutManager.startRestPeriod()
         
-        // During Rest Capture, spawn the target monster
+        // During Rest Capture, spawn the target podmon
         XCTAssertEqual(session.workoutManager.currentState, .restCapture)
         
-        let target = Monster(name: "Basalt Sprite", faction: .forge)
-        session.capturedMonsters.append(target)
-        XCTAssertEqual(session.capturedMonsters.count, 1)
+        let target = Podmon(name: "Basalt Sprite", faction: .forge)
+        session.capturedPodmons.append(target)
+        XCTAssertEqual(session.capturedPodmons.count, 1)
     }
     
     func testT3_COMB_07_MulticomponentGameSessionSave() {
         let session = GameSession()
-        var starter = Monster(name: "Zephyr", faction: .kinetic)
+        var starter = Podmon(name: "Zephyr", faction: .kinetic)
         starter.addXP(4500.0, activityType: .kinetic)
         let evolved = starter.checkEvolution()
-        session.equippedBuddy = evolved
+        session.equippedPodmon = evolved
         
         try? session.useBait(.ironHooks) // spend 1 iron hook
         
@@ -278,7 +278,7 @@ final class GameSessionTests: XCTestCase {
         let restoredSession = GameSession()
         try? restoredSession.restoreState(from: data)
         
-        XCTAssertEqual(restoredSession.equippedBuddy?.name, "Evolved Zephyr")
+        XCTAssertEqual(restoredSession.equippedPodmon?.name, "Evolved Zephyr")
         XCTAssertEqual(restoredSession.baitInventory[.ironHooks], 4)
     }
     
@@ -286,11 +286,11 @@ final class GameSessionTests: XCTestCase {
     
     func testT4_SCEN_01_CompleteWalkAndCaptureRoutine() async {
         let session = GameSession()
-        let buddy = Monster(name: "Zephyr", faction: .kinetic)
-        session.equippedBuddy = buddy
+        let podmon = Podmon(name: "Zephyr", faction: .kinetic)
+        session.equippedPodmon = podmon
         
         // Step 1: Walk registered at 145 steps/min -> add Kinetic XP
-        session.equippedBuddy?.addXP(100.0, activityType: .kinetic)
+        session.equippedPodmon?.addXP(100.0, activityType: .kinetic)
         
         // Step 2: Biome Scanner triggers and parses a greenSpace biome
         session.biomeScanner.mockOverpassResponse = "{\"tags\": {\"leisure\": \"park\"}}"
@@ -307,21 +307,21 @@ final class GameSessionTests: XCTestCase {
         let expectation = self.expectation(description: "Pinch flick capture")
         session.motionManager.onGestureDetected = { gesture in
             XCTAssertEqual(gesture, "pinch-and-flick")
-            let captured = Monster(name: "Wild Zephyr", faction: .kinetic)
-            session.capturedMonsters.append(captured)
-            session.equippedBuddy?.addXP(50.0, activityType: .kinetic)
+            let captured = Podmon(name: "Wild Zephyr", faction: .kinetic)
+            session.capturedPodmons.append(captured)
+            session.equippedPodmon?.addXP(50.0, activityType: .kinetic)
             expectation.fulfill()
         }
         session.motionManager.simulateGesture("pinch-and-flick")
         
         await fulfillment(of: [expectation], timeout: 1.0)
-        XCTAssertEqual(session.capturedMonsters.count, 1)
-        XCTAssertGreaterThan(session.equippedBuddy?.xp ?? 0, 0.0)
+        XCTAssertEqual(session.capturedPodmons.count, 1)
+        XCTAssertGreaterThan(session.equippedPodmon?.xp ?? 0, 0.0)
     }
     
     func testT4_SCEN_02_BarbellStrengthWorkoutAndRestCapture() {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Basalt", faction: .forge)
+        session.equippedPodmon = Podmon(name: "Basalt", faction: .forge)
         
         // Step 1: Start strength session
         session.workoutManager.startWorkout()
@@ -335,17 +335,17 @@ final class GameSessionTests: XCTestCase {
         XCTAssertEqual(session.workoutManager.currentState, .restCapture)
         
         // Step 4: Perform cradle gesture to capture
-        let captured = Monster(name: "Forge Sprite", faction: .forge)
-        session.capturedMonsters.append(captured)
-        session.equippedBuddy?.addXP(100.0, activityType: .forge)
+        let captured = Podmon(name: "Forge Sprite", faction: .forge)
+        session.capturedPodmons.append(captured)
+        session.equippedPodmon?.addXP(100.0, activityType: .forge)
         
-        XCTAssertEqual(session.capturedMonsters.count, 1)
-        XCTAssertEqual(session.equippedBuddy?.level, 2)
+        XCTAssertEqual(session.capturedPodmons.count, 1)
+        XCTAssertEqual(session.equippedPodmon?.level, 2)
     }
     
     func testT4_SCEN_03_DeepMeditationAndEtherealSpiritBonding() {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Lumina", faction: .aether)
+        session.equippedPodmon = Podmon(name: "Lumina", faction: .aether)
         
         // Step 1: Start mindful session, check high stillness score
         session.motionManager.startTracking()
@@ -357,17 +357,17 @@ final class GameSessionTests: XCTestCase {
         XCTAssertEqual(session.fishingEngine.breathPaceMatchScore, 1.0)
         
         // Step 3: Capture Ethereal spirit
-        let spirit = Monster(name: "Aether Spirit", faction: .aether)
-        session.capturedMonsters.append(spirit)
-        session.equippedBuddy?.addXP(150.0, activityType: .aether)
+        let spirit = Podmon(name: "Aether Spirit", faction: .aether)
+        session.capturedPodmons.append(spirit)
+        session.equippedPodmon?.addXP(150.0, activityType: .aether)
         
-        XCTAssertEqual(session.capturedMonsters.count, 1)
-        XCTAssertGreaterThan(session.equippedBuddy?.xp ?? 0.0, 0.0)
+        XCTAssertEqual(session.capturedPodmons.count, 1)
+        XCTAssertGreaterThan(session.equippedPodmon?.xp ?? 0.0, 0.0)
     }
     
     func testT4_SCEN_04_MeditativeWeekendFishingTrip() async {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Lumina", faction: .aether)
+        session.equippedPodmon = Podmon(name: "Lumina", faction: .aether)
         
         // Step 1: Travel to lake, scan water biome at dusk
         session.biomeScanner.mockOverpassResponse = "{\"tags\": {\"natural\": \"water\"}}"
@@ -402,12 +402,12 @@ final class GameSessionTests: XCTestCase {
         session.fishingEngine.reelIn()
         
         XCTAssertEqual(session.fishingEngine.currentState, .captured)
-        XCTAssertEqual(session.capturedMonsters.count, 1)
+        XCTAssertEqual(session.capturedPodmons.count, 1)
     }
     
     func testT4_SCEN_05_TempestStormPuddleFishingEvent() {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Zephyr", faction: .kinetic)
+        session.equippedPodmon = Podmon(name: "Zephyr", faction: .kinetic)
         
         // Step 1: Active rain/tempest reported
         session.biomeScanner.mockWeatherRainy = true
@@ -427,19 +427,19 @@ final class GameSessionTests: XCTestCase {
         session.fishingEngine.reelIn()
         
         XCTAssertEqual(session.fishingEngine.currentState, .captured)
-        XCTAssertEqual(session.capturedMonsters.count, 1)
+        XCTAssertEqual(session.capturedPodmons.count, 1)
     }
     
     // MARK: - Gamification Evolution Tests
     
     class MockGameSessionDelegate: GameSessionDelegate {
-        var evolvedMonster: Monster?
-        var originalMonster: Monster?
+        var evolvedPodmon: Podmon?
+        var originalPodmon: Podmon?
         var didEvolveExpectation: XCTestExpectation?
         
-        func gameSession(_ session: GameSession, didEvolveMonster monster: Monster, from oldMonster: Monster) {
-            evolvedMonster = monster
-            originalMonster = oldMonster
+        func gameSession(_ session: GameSession, didEvolvePodmon podmon: Podmon, from oldPodmon: Podmon) {
+            evolvedPodmon = podmon
+            originalPodmon = oldPodmon
             didEvolveExpectation?.fulfill()
         }
     }
@@ -452,7 +452,7 @@ final class GameSessionTests: XCTestCase {
         // Setup Zephyr starter at level 9
         // Zephyr is Kinetic, to trigger kinetic evolution (Evolved Zephyr), kinetic weight must be >= 0.70.
         // We will initialize it at level 9, xp 99.0.
-        let starter = Monster(
+        let starter = Podmon(
             name: "Zephyr",
             faction: .kinetic,
             level: 9,
@@ -460,14 +460,14 @@ final class GameSessionTests: XCTestCase {
             kineticXP: 99.0,
             kineticXPWeight: 1.0
         )
-        session.equippedBuddy = starter
+        session.equippedPodmon = starter
         
         // Listen to notification
         let notificationExpectation = self.expectation(description: "Evolution notification post")
-        let token = NotificationCenter.default.addObserver(forName: .monsterDidEvolve, object: session, queue: nil) { notification in
-            XCTAssertNotNil(notification.userInfo?["monster"] as? Monster)
-            XCTAssertNotNil(notification.userInfo?["oldMonster"] as? Monster)
-            let evolved = notification.userInfo?["monster"] as! Monster
+        let token = NotificationCenter.default.addObserver(forName: .podmonDidEvolve, object: session, queue: nil) { notification in
+            XCTAssertNotNil(notification.userInfo?["podmon"] as? Podmon)
+            XCTAssertNotNil(notification.userInfo?["oldPodmon"] as? Podmon)
+            let evolved = notification.userInfo?["podmon"] as! Podmon
             XCTAssertEqual(evolved.name, "Evolved Zephyr")
             notificationExpectation.fulfill()
         }
@@ -476,16 +476,16 @@ final class GameSessionTests: XCTestCase {
         delegate.didEvolveExpectation = delegateExpectation
         
         // Earn XP to cross level 10 -> will trigger level up to 10 and auto-evolution!
-        // Kinetic drip postureGoodXP is 1.5 XP. We can just update head carriage (good posture)
+        // Kinetic drip postureGoodXP is 1.0 XP. We can just update head carriage (good posture)
         session.motionManager(session.motionManager, didUpdateHeadCarriage: 2.0)
         
         waitForExpectations(timeout: 2.0)
         NotificationCenter.default.removeObserver(token)
         
-        XCTAssertEqual(session.equippedBuddy?.level, 10)
-        XCTAssertEqual(session.equippedBuddy?.name, "Evolved Zephyr")
-        XCTAssertEqual(delegate.originalMonster?.name, "Zephyr")
-        XCTAssertEqual(delegate.evolvedMonster?.name, "Evolved Zephyr")
+        XCTAssertEqual(session.equippedPodmon?.level, 10)
+        XCTAssertEqual(session.equippedPodmon?.name, "Evolved Zephyr")
+        XCTAssertEqual(delegate.originalPodmon?.name, "Zephyr")
+        XCTAssertEqual(delegate.evolvedPodmon?.name, "Evolved Zephyr")
     }
     
     func testAutomaticTitanEvolutionFlow() {
@@ -493,7 +493,7 @@ final class GameSessionTests: XCTestCase {
         
         // Setup Zephyr starter at level 9, but with non-kinetic major weight (e.g. forge weight)
         // so it evolves into Titan Zephyr (kinetic weight < 0.70)
-        let starter = Monster(
+        let starter = Podmon(
             name: "Zephyr",
             faction: .kinetic,
             level: 9,
@@ -503,12 +503,12 @@ final class GameSessionTests: XCTestCase {
             kineticXPWeight: 0.1,
             forgeXPWeight: 0.9
         )
-        session.equippedBuddy = starter
+        session.equippedPodmon = starter
         
         // Earn XP to cross level 10
         session.motionManager(session.motionManager, didUpdateHeadCarriage: 2.0)
         
-        XCTAssertEqual(session.equippedBuddy?.level, 10)
-        XCTAssertEqual(session.equippedBuddy?.name, "Titan Zephyr")
+        XCTAssertEqual(session.equippedPodmon?.level, 10)
+        XCTAssertEqual(session.equippedPodmon?.name, "Titan Zephyr")
     }
 }

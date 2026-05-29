@@ -37,10 +37,10 @@ public struct FishingView: View {
                     Text("HRV Score: \(String(format: "%.1f", fishingEngine.hrvScore))")
                     Text("Shift Confirmed: \(fishingEngine.parasympatheticShiftConfirmed ? "Yes" : "No")")
                     
-                    if let equipped = gameSession.equippedBuddy {
-                        Text("Equipped Buddy: \(equipped.name) (Faction: \(equipped.faction.rawValue), Level: \(equipped.level))")
+                    if let equipped = gameSession.equippedPodmon {
+                        Text("Equipped Podmon: \(equipped.name) (Faction: \(equipped.faction.rawValue), Level: \(equipped.level))")
                     } else {
-                        Text("Equipped Buddy: None")
+                        Text("Equipped Podmon: None")
                             .foregroundStyle(.red.gradient)
                     }
                     
@@ -83,29 +83,29 @@ public struct FishingView: View {
                 .background(.ultraThinMaterial)
                 .clipShape(.rect(cornerRadius: 16))
                 
-                // Buddy Mock Controls
+                // Podmon Mock Controls
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Equip / Mock Buddy")
+                    Text("Equip / Mock Podmon")
                         .font(.subheadline)
                         .bold()
                     
                     HStack(spacing: 12) {
                         Button(action: {
-                            gameSession.equippedBuddy = Monster.zephyr()
+                            gameSession.equippedPodmon = Podmon.zephyr()
                         }) {
                             Label("Zephyr", systemImage: "wind")
                         }
                         .buttonStyle(FactionButtonStyle(colors: [.teal, .mint], shadowColor: .teal))
                         
                         Button(action: {
-                            gameSession.equippedBuddy = Monster.basalt()
+                            gameSession.equippedPodmon = Podmon.basalt()
                         }) {
                             Label("Basalt", systemImage: "flame")
                         }
                         .buttonStyle(FactionButtonStyle(colors: [.orange, .red], shadowColor: .orange))
                         
                         Button(action: {
-                            gameSession.equippedBuddy = Monster.lumina()
+                            gameSession.equippedPodmon = Podmon.lumina()
                         }) {
                             Label("Lumina", systemImage: "sparkles")
                         }

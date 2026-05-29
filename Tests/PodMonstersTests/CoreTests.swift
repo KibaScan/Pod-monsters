@@ -4,10 +4,10 @@ import XCTest
 @MainActor
 final class CoreTests: XCTestCase {
     
-    // MARK: - F1: Monster Model & Growth
+    // MARK: - F1: Podmon Model & Growth
     
-    func testT1_F1_01_MonsterInitialization() {
-        let zephyr = Monster(name: "Zephyr", faction: .kinetic)
+    func testT1_F1_01_PodmonInitialization() {
+        let zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         XCTAssertEqual(zephyr.name, "Zephyr")
         XCTAssertEqual(zephyr.faction, .kinetic)
         XCTAssertEqual(zephyr.level, 1)
@@ -15,14 +15,14 @@ final class CoreTests: XCTestCase {
         XCTAssertEqual(zephyr.speed, 10.0)
         XCTAssertEqual(zephyr.agility, 10.0)
         
-        let basalt = Monster(name: "Basalt", faction: .forge)
+        let basalt = Podmon(name: "Basalt", faction: .forge)
         XCTAssertEqual(basalt.name, "Basalt")
         XCTAssertEqual(basalt.faction, .forge)
         XCTAssertEqual(basalt.level, 1)
         XCTAssertEqual(basalt.power, 10.0)
         XCTAssertEqual(basalt.hp, 100.0)
         
-        let lumina = Monster(name: "Lumina", faction: .aether)
+        let lumina = Podmon(name: "Lumina", faction: .aether)
         XCTAssertEqual(lumina.name, "Lumina")
         XCTAssertEqual(lumina.faction, .aether)
         XCTAssertEqual(lumina.level, 1)
@@ -31,7 +31,7 @@ final class CoreTests: XCTestCase {
     }
     
     func testT1_F1_02_KineticXPGrowth() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic)
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         let initialSpeed = zephyr.speed
         let initialAgility = zephyr.agility
         
@@ -43,7 +43,7 @@ final class CoreTests: XCTestCase {
     }
     
     func testT1_F1_03_ForgeXPGrowth() {
-        var basalt = Monster(name: "Basalt", faction: .forge)
+        var basalt = Podmon(name: "Basalt", faction: .forge)
         let initialPower = basalt.power
         let initialHP = basalt.hp
         
@@ -55,7 +55,7 @@ final class CoreTests: XCTestCase {
     }
     
     func testT1_F1_04_AetherXPGrowth() {
-        var lumina = Monster(name: "Lumina", faction: .aether)
+        var lumina = Podmon(name: "Lumina", faction: .aether)
         let initialFocus = lumina.focus
         let initialSpecial = lumina.special
         
@@ -67,7 +67,7 @@ final class CoreTests: XCTestCase {
     }
     
     func testT1_F1_05_StandardEvolutionCheck() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic)
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         XCTAssertNil(zephyr.checkEvolution())
         
         // Add enough XP to level up beyond the evolution threshold (4500 XP)
@@ -80,7 +80,7 @@ final class CoreTests: XCTestCase {
     }
     
     func testT2_F1_01_LevelCapLimit() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic, level: 99)
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic, level: 99)
         // Level 99 to 100 needs 9900 XP.
         // Add extreme XP.
         zephyr.addXP(1_000_000.0, activityType: .kinetic)
@@ -95,7 +95,7 @@ final class CoreTests: XCTestCase {
     }
     
     func testT2_F1_02_NonMatchingFactionXP() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic)
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         let initialSpeed = zephyr.speed
         
         // Non-matching XP (Forge on Kinetic) should have degraded rate (50%)
@@ -105,7 +105,7 @@ final class CoreTests: XCTestCase {
         XCTAssertEqual(zephyr.speed, initialSpeed)
         
         // Match XP (Kinetic on Kinetic)
-        var zephyr2 = Monster(name: "Zephyr2", faction: .kinetic)
+        var zephyr2 = Podmon(name: "Zephyr2", faction: .kinetic)
         zephyr2.addXP(100.0, activityType: .kinetic)
         
         XCTAssertEqual(zephyr2.xp, 0.0)
@@ -114,7 +114,7 @@ final class CoreTests: XCTestCase {
     }
     
     func testT2_F1_03_EvolutionXPBoundaries() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic)
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         
         // Exactly 1 XP below threshold (899.0)
         zephyr.addXP(899.0, activityType: .kinetic)
@@ -126,7 +126,7 @@ final class CoreTests: XCTestCase {
     }
     
     func testT2_F1_04_LevelUpStatCalculation() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic)
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         let baseSpeed = zephyr.speed
         
         // Level up by hitting 100 XP
@@ -137,7 +137,7 @@ final class CoreTests: XCTestCase {
     }
     
     func testT2_F1_05_XPFloatOverflow() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic)
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         
         // Send extremely large Double value
         zephyr.addXP(Double.greatestFiniteMagnitude, activityType: .kinetic)

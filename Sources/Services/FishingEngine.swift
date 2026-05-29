@@ -33,7 +33,7 @@ public class FishingEngine: ObservableObject {
     @Published public var sessionBaselineHRV: Double = 60.0
     
     public var hapticTugCallback: (() -> Void)?
-    public var captureSuccessCallback: ((Monster) -> Void)?
+    public var captureSuccessCallback: ((Podmon) -> Void)?
     public var currentBait: BaitType?
     
     public init() {}
@@ -113,8 +113,8 @@ public class FishingEngine: ObservableObject {
         if self.currentState == .reeling && self.breathPaceMatchScore >= GameConstants.captureBreathingThreshold && self.lineTension <= GameConstants.captureMaxTension {
             self.currentState = .captured
             let catchResult = CatchTable.lookup(biome: resolvedBiome, bait: self.currentBait ?? .spinnerLures)
-            let capturedMonster = Monster(name: catchResult.name, faction: catchResult.faction)
-            self.captureSuccessCallback?(capturedMonster)
+            let capturedPodmon = Podmon(name: catchResult.name, faction: catchResult.faction)
+            self.captureSuccessCallback?(capturedPodmon)
         }
     }
     
@@ -141,7 +141,7 @@ public class FishingEngine: ObservableObject {
         self.currentBait = nil
     }
     
-    public func releaseBuddy() {
+    public func releasePodmon() {
         self.currentState = .idle
         self.lineTension = GameConstants.minLineTension
         self.breathPaceMatchScore = 1.0

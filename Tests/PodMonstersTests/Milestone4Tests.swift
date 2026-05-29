@@ -4,37 +4,37 @@ import XCTest
 @MainActor
 final class Milestone4Tests: XCTestCase {
     
-    // MARK: - Release Buddy Feature Tests
+    // MARK: - Release Podmon Feature Tests
     
-    func testReleaseBuddy_Success() {
+    func testReleasePodmon_Success() {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Zephyr", faction: .kinetic)
+        session.equippedPodmon = Podmon(name: "Zephyr", faction: .kinetic)
         
-        let wild = Monster(name: "Wild Basalt", faction: .forge)
-        session.capturedMonsters.append(wild)
+        let wild = Podmon(name: "Wild Basalt", faction: .forge)
+        session.capturedPodmons.append(wild)
         
-        XCTAssertEqual(session.capturedMonsters.count, 1)
-        XCTAssertEqual(session.equippedBuddy?.xp, 0.0)
-        XCTAssertEqual(session.equippedBuddy?.level, 1)
+        XCTAssertEqual(session.capturedPodmons.count, 1)
+        XCTAssertEqual(session.equippedPodmon?.xp, 0.0)
+        XCTAssertEqual(session.equippedPodmon?.level, 1)
         
-        XCTAssertNoThrow(try session.releaseBuddy(wild))
+        XCTAssertNoThrow(try session.releasePodmon(wild))
         
-        // Assert: Monster is removed from capturedMonsters
-        XCTAssertTrue(session.capturedMonsters.isEmpty)
+        // Assert: Podmon is removed from capturedPodmons
+        XCTAssertTrue(session.capturedPodmons.isEmpty)
         
-        // Assert: 500 XP added to equippedBuddy (level goes from 1 to 6)
-        XCTAssertEqual(session.equippedBuddy?.level, 6)
+        // Assert: 500 XP added to equippedPodmon (level goes from 1 to 6)
+        XCTAssertEqual(session.equippedPodmon?.level, 6)
     }
     
-    func testReleaseBuddy_MonsterNotFound() {
+    func testReleasePodmon_PodmonNotFound() {
         let session = GameSession()
-        session.equippedBuddy = Monster(name: "Zephyr", faction: .kinetic)
+        session.equippedPodmon = Podmon(name: "Zephyr", faction: .kinetic)
         
-        let wild = Monster(name: "Wild Basalt", faction: .forge)
-        // Note: wild is NOT added to capturedMonsters
+        let wild = Podmon(name: "Wild Basalt", faction: .forge)
+        // Note: wild is NOT added to capturedPodmons
         
-        XCTAssertThrowsError(try session.releaseBuddy(wild)) { error in
-            XCTAssertEqual(error as? SessionError, .monsterNotFound)
+        XCTAssertThrowsError(try session.releasePodmon(wild)) { error in
+            XCTAssertEqual(error as? SessionError, .podmonNotFound)
         }
     }
     

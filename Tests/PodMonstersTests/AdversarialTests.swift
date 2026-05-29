@@ -6,10 +6,10 @@ import CoreMotion
 @MainActor
 final class AdversarialTests: XCTestCase {
     
-    // MARK: - Monster XP & Growth (NaN/Infinity/Negative)
+    // MARK: - Podmon XP & Growth (NaN/Infinity/Negative)
     
-    func testAdversarial_MonsterXP_NaN() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic)
+    func testAdversarial_PodmonXP_NaN() {
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         
         // 1. Add NaN XP
         zephyr.addXP(Double.nan, activityType: .kinetic)
@@ -23,8 +23,8 @@ final class AdversarialTests: XCTestCase {
         XCTAssertEqual(zephyr.level, 1) // Level is stuck at 1
     }
     
-    func testAdversarial_MonsterXP_Infinity() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic)
+    func testAdversarial_PodmonXP_Infinity() {
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         
         // 1. Add Infinity XP
         zephyr.addXP(Double.infinity, activityType: .kinetic)
@@ -38,8 +38,8 @@ final class AdversarialTests: XCTestCase {
         XCTAssertTrue(zephyr.agility.isNaN)
     }
     
-    func testAdversarial_MonsterXP_Negative() {
-        var zephyr = Monster(name: "Zephyr", faction: .kinetic)
+    func testAdversarial_PodmonXP_Negative() {
+        var zephyr = Podmon(name: "Zephyr", faction: .kinetic)
         let initialSpeed = zephyr.speed
         
         // 1. Add negative XP

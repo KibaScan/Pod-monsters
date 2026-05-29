@@ -32,8 +32,8 @@ public struct GameConstants {
     // Capture success XP
     public static let captureSuccessXP: Double = 50.0
     
-    // Release buddy XP
-    public static let releaseBuddyXP: Double = 500.0
+    // Release podmon XP
+    public static let releasePodmonXP: Double = 500.0
     
     // Other Game Constants (from hardcoded values in FishingEngine)
     public static let maxLineTension: Double = 1.0

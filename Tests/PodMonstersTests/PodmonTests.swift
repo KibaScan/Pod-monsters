@@ -2,12 +2,12 @@ import XCTest
 @testable import PodMonsters
 
 @MainActor
-final class MonsterTests: XCTestCase {
+final class PodmonTests: XCTestCase {
     
     // MARK: - Evolution Tests
     
     func testPureZephyrEvolution() {
-        var zephyr = Monster.zephyr()
+        var zephyr = Podmon.zephyr()
         XCTAssertEqual(zephyr.name, "Zephyr")
         XCTAssertEqual(zephyr.level, 1)
         XCTAssertNil(zephyr.checkEvolution())
@@ -29,7 +29,7 @@ final class MonsterTests: XCTestCase {
     }
     
     func testHybridZephyrEvolution() {
-        var zephyr = Monster.zephyr()
+        var zephyr = Podmon.zephyr()
         XCTAssertEqual(zephyr.name, "Zephyr")
         XCTAssertNil(zephyr.checkEvolution())
         
@@ -55,7 +55,7 @@ final class MonsterTests: XCTestCase {
     }
     
     func testPureBasaltEvolution() {
-        var basalt = Monster.basalt()
+        var basalt = Podmon.basalt()
         XCTAssertEqual(basalt.name, "Basalt")
         XCTAssertNil(basalt.checkEvolution())
         
@@ -76,7 +76,7 @@ final class MonsterTests: XCTestCase {
     }
     
     func testHybridBasaltEvolution() {
-        var basalt = Monster.basalt()
+        var basalt = Podmon.basalt()
         XCTAssertEqual(basalt.name, "Basalt")
         XCTAssertNil(basalt.checkEvolution())
         
@@ -102,7 +102,7 @@ final class MonsterTests: XCTestCase {
     }
     
     func testPureLuminaEvolution() {
-        var lumina = Monster.lumina()
+        var lumina = Podmon.lumina()
         XCTAssertEqual(lumina.name, "Lumina")
         XCTAssertNil(lumina.checkEvolution())
         
@@ -123,7 +123,7 @@ final class MonsterTests: XCTestCase {
     }
     
     func testHybridLuminaEvolution() {
-        var lumina = Monster.lumina()
+        var lumina = Podmon.lumina()
         XCTAssertEqual(lumina.name, "Lumina")
         XCTAssertNil(lumina.checkEvolution())
         
@@ -151,7 +151,7 @@ final class MonsterTests: XCTestCase {
     // MARK: - Level-Up Growth Tests
     
     func testExactStatGrowthPure() {
-        var zephyr = Monster.zephyr()
+        var zephyr = Podmon.zephyr()
         
         // Initial stats check
         XCTAssertEqual(zephyr.speed, 15.0)
@@ -181,7 +181,7 @@ final class MonsterTests: XCTestCase {
     }
     
     func testExactStatGrowthHybrid() {
-        var zephyr = Monster.zephyr()
+        var zephyr = Podmon.zephyr()
         
         // Initial stats check
         XCTAssertEqual(zephyr.speed, 15.0)

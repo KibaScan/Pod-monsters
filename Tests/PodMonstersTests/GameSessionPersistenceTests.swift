@@ -34,7 +34,7 @@ final class GameSessionPersistenceTests: XCTestCase {
         session.customPersistenceURL = uniqueTestURL
         
         session.isSubscriber = true
-        session.equippedBuddy = Monster(name: "Basalt", faction: .forge)
+        session.equippedPodmon = Podmon(name: "Basalt", faction: .forge)
         try? session.addBait(.ironHooks, count: 10)
         
         XCTAssertNoThrow(try session.saveToFile())
@@ -48,7 +48,7 @@ final class GameSessionPersistenceTests: XCTestCase {
         
         let state = try? JSONDecoder().decode(GameSessionState.self, from: data!)
         XCTAssertNotNil(state)
-        XCTAssertEqual(state?.equippedBuddy?.name, "Basalt")
+        XCTAssertEqual(state?.equippedPodmon?.name, "Basalt")
         XCTAssertEqual(state?.baitInventory[.ironHooks], 15) // default 5 + added 10
         XCTAssertTrue(state?.isSubscriber ?? false)
     }
@@ -58,7 +58,7 @@ final class GameSessionPersistenceTests: XCTestCase {
         session.customPersistenceURL = uniqueTestURL
         
         session.isSubscriber = true
-        session.equippedBuddy = Monster(name: "Lumina", faction: .aether)
+        session.equippedPodmon = Podmon(name: "Lumina", faction: .aether)
         try? session.addBait(.mindBeads, count: 20)
         
         XCTAssertNoThrow(try session.saveToFile())
@@ -69,7 +69,7 @@ final class GameSessionPersistenceTests: XCTestCase {
         
         XCTAssertNoThrow(try newSession.loadFromFile())
         
-        XCTAssertEqual(newSession.equippedBuddy?.name, "Lumina")
+        XCTAssertEqual(newSession.equippedPodmon?.name, "Lumina")
         XCTAssertEqual(newSession.baitInventory[.mindBeads], 25) // default 5 + added 20
         XCTAssertTrue(newSession.isSubscriber)
     }
@@ -79,7 +79,7 @@ final class GameSessionPersistenceTests: XCTestCase {
         let session = GameSession()
         session.customPersistenceURL = uniqueTestURL
         session.isSubscriber = true
-        session.equippedBuddy = Monster(name: "Lumina", faction: .aether)
+        session.equippedPodmon = Podmon(name: "Lumina", faction: .aether)
         try? session.addBait(.mindBeads, count: 20)
         
         XCTAssertNoThrow(try session.saveToFile())
@@ -91,7 +91,7 @@ final class GameSessionPersistenceTests: XCTestCase {
         // Now create a cold launch simulator GameSession
         let newSession = GameSession()
         
-        XCTAssertEqual(newSession.equippedBuddy?.name, "Lumina")
+        XCTAssertEqual(newSession.equippedPodmon?.name, "Lumina")
         XCTAssertEqual(newSession.baitInventory[.mindBeads], 25) // default 5 + added 20
         XCTAssertTrue(newSession.isSubscriber)
     }
@@ -121,7 +121,7 @@ final class GameSessionPersistenceTests: XCTestCase {
         session.customPersistenceURL = uniqueTestURL
         
         session.isSubscriber = true
-        session.equippedBuddy = Monster(name: "Basalt", faction: .forge)
+        session.equippedPodmon = Podmon(name: "Basalt", faction: .forge)
         try? session.saveToFile()
         
         // Delete the signature file
@@ -143,11 +143,11 @@ final class GameSessionPersistenceTests: XCTestCase {
         session.customPersistenceURL = uniqueTestURL
         
         session.isSubscriber = true
-        session.equippedBuddy = Monster(name: "Basalt", faction: .forge)
+        session.equippedPodmon = Podmon(name: "Basalt", faction: .forge)
         try? session.saveToFile()
         
         // Modify/Tamper the JSON state file
-        let tamperedData = "{\"equippedBuddy\": null}".data(using: .utf8)!
+        let tamperedData = "{\"equippedPodmon\": null}".data(using: .utf8)!
         try? tamperedData.write(to: uniqueTestURL)
         
         // Cold boot loading should throw signatureMismatch error since signature doesn't match the new content
