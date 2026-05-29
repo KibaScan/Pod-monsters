@@ -19,3 +19,9 @@
 - **Status**: Accepted
 - **Context**: Raw headphones attitude motion streaming consumes excessive battery and generates high signal noise.
 - **Decision**: Implement a centralized `motionSampleInterval` logic in `AirPodsMotionManager`. Throttling bounds attitude processing rates, and adds safe unwraps/infinite protection checks on attitude calibration deltas inside standard `[-180, 180]` boundaries.
+
+## D-05: Naming & Vocabulary (Podmon / Pod-dex)
+- **Status**: Accepted
+- **Context**: The codebase and user interface were using inconsistent terms like "Monster", "buddy", and "familiar" to refer to the companion creatures.
+- **Decision**: Standardize on the term **Podmon** (singular) and **Podmons** (plural). The Swift code type is named `Podmon`. User-facing copy will exclusively use "Podmon" / "Podmons". The collection screen is named the **Pod-dex**. Milestone M-A0.5 will perform a global refactor to rename `Monster` → `Podmon` and all "buddy"/"monster" terminology to "Podmon" / "Podmons" across sources and tests.
+

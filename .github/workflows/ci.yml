@@ -1,0 +1,61 @@
+# Pod Monsters CI — drop this at:  .github/workflows/ci.yml
+#
+# Enforces merge gates 1 & 2 on every PR to main:
+#   1. swift test (green)
+#   2. swift build with complete strict-concurrency checking, warnings = errors
+#
+# Mark these as required status checks in branch protection (Settings → Branches).
+# Note: enable `swift test` now (passes today); add `strict-concurrency` as required
+# once it's green (see docs/WORKFLOW.md → Caveats).
+
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+# Cancel superseded runs on the same branch to save runner minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: swift test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain version
+        run: swift --version
+      - name: Build
+        run: swift build
+      - name: Test
+        run: swift test
+
+  strict-concurrency:
+    name: strict concurrency (warnings = errors)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build with complete concurrency checking
+        run: swift build -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
+
+# ---------------------------------------------------------------------------
+# OPTIONAL: full-fidelity iOS Simulator run.
+# Enable this (and consider gating on it instead of `swift test`) if any code
+# imports iOS-only frameworks — e.g. HealthKit — that can't compile on the
+# macOS host. Requires the SPM-generated scheme "PodMonsters-Package".
+# Adjust the simulator device name to one available on the runner's Xcode.
+# ---------------------------------------------------------------------------
+#  ios-simulator:
+#    name: xcodebuild test (iOS Simulator)
+#    runs-on: macos-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Test on iOS Simulator
+#        run: |
+#          xcodebuild test \
+#            -scheme PodMonsters-Package \
+#            -destination 'platform=iOS Simulator,name=iPhone 16'
