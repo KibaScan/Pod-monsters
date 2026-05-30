@@ -24,16 +24,6 @@
   - sequential Verification: Validated functional non-regression with all 151 unit tests passing successfully.
   - Git Branch Protection: Checked out and cleanly integrated refactoring into the `main` branch, successfully deleting the temporary `m-a0-fishing-cleanup` branch.
 
-### Session — 2026-05-26T16:34:00Z
-- **Files changed**: `Sources/Services/FishingEngine.swift`, `Sources/Core/GameSession.swift`.
-- **Accomplished**:
-  - M-A0: FishingEngine Concurrency Cleanup: Removed the banned synchronous main-thread helper `updateOnMainThread(_:)` and all `DispatchQueue.main.sync` references inside `FishingEngine.swift`.
-  - Standardized on `@MainActor` isolation for the entire `FishingEngine` and related `GameSession` structures.
-  - Resolved `GameSession.swift` concurrency-related compiler warnings.
-  - Verified clean compilation with `-strict-concurrency=complete`.
-  - Confirmed 151 passing tests with 0 failures.
-
-
 ## Numbers
 - **Total Tests**: 157
 - **Passing Tests**: 157
