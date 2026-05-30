@@ -1,13 +1,28 @@
 # Pod Monsters SDK: Live Session Snapshot
 
 ## Stats
-- **Total Tests**: 170
-- **Passing Tests**: 170
+- **Total Tests**: 177
+- **Passing Tests**: 177
 - **Failing Tests**: 0
 - **Architectural Decisions**: 5
-- **Current Branch**: main
+- **Current Branch**: m-a5-cardio-session
 
-## Last Session (Current) — 2026-05-30 — M-A4: Meditation Session
+## Last Session (Current) — 2026-05-30 — M-A5: Cardio Session
+- Files: `Sources/Core/Cardio/HRZone.swift`, `Sources/Core/Cardio/CardioPayload.swift`, `Sources/Core/Cardio/CardioSession.swift`, `Tests/PodMonstersTests/CardioTests.swift`
+- Done:
+  - Heart Rate Zone Classification: Configured `HRZone` supporting 5 intensity zones with a configurable or Max HR derived `HRZoneRanges` boundary check.
+  - Conforming WellnessSession: Developed `@MainActor`-isolated `CardioSession` representing `.cardio` sessions conforming to `WellnessSession`.
+  - Metrics Aggregation: Supported aggregating steps count, walking/running distance, and custom/average movement levels.
+  - Calculated Pace & Cadence: Engineered real-time duration-based cadence and average pace (seconds/km) calculations with formatted user-friendly outputs (e.g. `MM:SS/km`).
+  - Active Cardio Effort Envelope: Configured dynamic effort score adding distance, steps, and target HR intensity multipliers, promoting qualified active sessions to `.verified`.
+  - Deterministic Testing & Safe Fallbacks: Implemented manual start/end date overrides to support 100% sleep-free test executions, confirming zone classification, metrics aggregation, verified tier checks, and sensorless fallback. Total test count: 170 → 177.
+  - Zero warnings under `swift build -Xswiftc -strict-concurrency=complete`.
+  - Zero existing files modified (strict guardrail satisfied).
+- Deferred: None.
+- Next: Phase B — Progression & Economy layer.
+- Gotchas: Always keep `CardioSession` isolated on `@MainActor`. Ensure time-in-zone splits total active session duration equally among raw heart rate samples.
+
+## Previous Session — 2026-05-30 — M-A4: Meditation Session
 - Files: `Sources/Core/Mindfulness/BreathingPattern.swift`, `Sources/Core/Mindfulness/MeditationPayload.swift`, `Sources/Core/Mindfulness/MeditationSession.swift`, `Tests/PodMonstersTests/MeditationTests.swift`
 - Done:
   - Breathing Patterns Configuration: Standardized `BreathingPattern` supporting standard patterns (4-7-8, Box, Resonant) and customized cycle timing phase calculations (inhale, hold, exhale).
@@ -23,23 +38,9 @@
 - Next: M-A5: Cardio Session pillar.
 - Gotchas: Keep MeditationSession strictly isolated on `@MainActor` and utilize standard type-safe payload codability. Sensorless sessions (no stillness data) now correctly default to `.selfReported`.
 
-## Previous Session — 2026-05-30 — M-A3: Strength Session (Logger)
-- Files: `Sources/Core/Strength/Exercise.swift`, `Sources/Core/Strength/RoutineTemplate.swift`, `Sources/Core/Strength/StrengthPayload.swift`, `Sources/Core/Strength/StrengthHistory.swift`, `Sources/Core/Strength/StrengthSession.swift`, `Tests/PodMonstersTests/StrengthTests.swift`
-- Done:
-  - Exercise Library & Routine Templates: Implemented the basic data structures (`Exercise`, `RoutineTemplate`, `ExerciseTemplate`) under `Sources/Core/Strength/`.
-  - Conforming WellnessSession: Created the `StrengthSession` class conforming to the `WellnessSession` protocol (representing `.strength` sessions) with dynamic active logged exercises.
-  - Progressive Overload Prefill: Designed `StrengthHistory` to pre-fill active templates using historical session summaries and configurable load increments.
-  - Volumetric & PR Calculations: Embedded per-exercise total volume, absolute maximum weight, and Epley-based estimated 1RM calculations.
-  - Passive Signal Capture: Integrated tracking for passive rep tempos, rest durations, and heart rate samples, folding them into a customized effort envelope score on finalize.
-  - Comprehensive Test Suite: Added 5 comprehensive tests inside `StrengthTests.swift`. Total test count: 160 → 165.
-  - Zero warnings under `swift build -Xswiftc -strict-concurrency=complete`.
-  - Zero existing files modified (strict guardrail satisfied).
-- Deferred: None.
-- Next: M-A4: Meditation Session pillar.
-- Gotchas: Keep StrengthSession isolated on @MainActor. Always decode extensible payload using standard type-safe codability.
-
 ## Recent History
 For the full history, see the permanent ledger: [HISTORY.md](file:///Users/stevendiaz/Pod%20monsters/docs/status/HISTORY.md)
+*   **2026-05-30**: M-A5: Cardio Session
 *   **2026-05-30**: M-A4: Meditation Session
 *   **2026-05-30**: M-A3: Strength Session (Logger)
 *   **2026-05-30**: M-A2: Wellness Session Core
@@ -47,4 +48,4 @@ For the full history, see the permanent ledger: [HISTORY.md](file:///Users/steve
 *   **2026-05-29**: M-A0.5: Podmon Vocabulary Rename
 
 ## Next Steps
-1. Kick off the conforming pillar M-A5 (Cardio Session).
+1. Transition to Phase B: Progression and Economy layer (M-B1 and M-B2).
