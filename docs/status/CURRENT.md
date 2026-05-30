@@ -5,7 +5,7 @@
 - **Passing Tests**: 177
 - **Failing Tests**: 0
 - **Architectural Decisions**: 5
-- **Current Branch**: m-a5-cardio-session
+- **Current Branch**: main
 
 ## Last Session (Current) — 2026-05-30 — M-A5: Cardio Session
 - Files: `Sources/Core/Cardio/HRZone.swift`, `Sources/Core/Cardio/CardioPayload.swift`, `Sources/Core/Cardio/CardioSession.swift`, `Tests/PodMonstersTests/CardioTests.swift`

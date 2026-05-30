@@ -1,5 +1,20 @@
 # Pod Monsters SDK: Session Log History
 
+## 2026-05-30 — M-A5: Cardio Session
+- Files: `Sources/Core/Cardio/HRZone.swift`, `Sources/Core/Cardio/CardioPayload.swift`, `Sources/Core/Cardio/CardioSession.swift`, `Tests/PodMonstersTests/CardioTests.swift`
+- Done:
+  - Heart Rate Zone Classification: Configured `HRZone` supporting 5 intensity zones with a configurable or Max HR derived `HRZoneRanges` boundary check.
+  - Conforming WellnessSession: Developed `@MainActor`-isolated `CardioSession` representing `.cardio` sessions conforming to `WellnessSession`.
+  - Metrics Aggregation: Supported aggregating steps count, walking/running distance, and custom/average movement levels.
+  - Calculated Pace & Cadence: Engineered real-time duration-based cadence and average pace (seconds/km) calculations with formatted user-friendly outputs (e.g. `MM:SS/km`).
+  - Active Cardio Effort Envelope: Configured dynamic effort score adding distance, steps, and target HR intensity multipliers, promoting qualified active sessions to `.verified`.
+  - Deterministic Testing & Safe Fallbacks: Implemented manual start/end date overrides to support 100% sleep-free test executions, confirming zone classification, metrics aggregation, verified tier checks, and sensorless fallback. Total test count: 170 → 177.
+  - Zero warnings under `swift build -Xswiftc -strict-concurrency=complete`.
+  - Zero existing files modified (strict guardrail satisfied).
+- Deferred: None.
+- Next: Phase B — Progression & Economy layer.
+- Gotchas: Always keep `CardioSession` isolated on `@MainActor`. Ensure time-in-zone splits total active session duration equally among raw heart rate samples.
+
 ## 2026-05-30 — M-A4: Meditation Session
 - Files: `Sources/Core/Mindfulness/BreathingPattern.swift`, `Sources/Core/Mindfulness/MeditationPayload.swift`, `Sources/Core/Mindfulness/MeditationSession.swift`, `Tests/PodMonstersTests/MeditationTests.swift`
 - Done:
