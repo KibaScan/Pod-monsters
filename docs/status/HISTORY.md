@@ -1,5 +1,18 @@
 # Pod Monsters SDK: Session Log History
 
+## 2026-05-30 — M-A2: Wellness Session Core
+- Files: `Sources/Core/Session/SessionType.swift`, `Sources/Core/Session/WellnessSession.swift`, `Sources/Core/Session/SessionSummary.swift`, `Sources/Core/Session/EffortEnvelope.swift`, `Tests/PodMonstersTests/SessionTests.swift`, `docs/status/CURRENT.md`
+- Done:
+  - Shared WellnessSession Abstraction: Defined the `WellnessSession` protocol, the faction-mapped `SessionType` enum, the `SessionSummary` struct, and the `EffortEnvelope` struct inside `Sources/Core/Session/`.
+  - Permissive Effort Envelope: Implemented default `.selfReported` effort verification logic with clearly named threshold constants.
+  - Extensible Payload Carrier: Designed `ExtensiblePayload` with type-safe generic codability for pillar-specific data.
+  - Retroactive Sendability: Integrated retroactive `@unchecked Sendable` conformance for `BiomeType` (required by Swift for cross-file conformance).
+  - Comprehensive Test Suite: Added 3 tests in `SessionTests.swift`. Total test count: 157 → 160. Zero warnings under strict concurrency.
+  - No existing files modified (guardrail satisfied).
+- Deferred: None.
+- Next: Kick off the parallel wave of conforming pillars (M-A3: Strength, M-A4: Meditation, M-A5: Cardio).
+- Gotchas: Reference Podmon by ID only. BiomeType `@unchecked Sendable` is required for cross-file conformance.
+
 ## 2026-05-30 — M-A1: HealthKit Ingestion Layer
 - Files: `Sources/Services/Health/HealthModels.swift`, `Sources/Services/Health/HealthDataProvider.swift`, `Sources/Services/Health/HealthKitDataProvider.swift`, `Sources/Services/Health/MockHealthDataProvider.swift`, `Tests/PodMonstersTests/HealthTests.swift`, `docs/status/CURRENT.md`
 - Done:
