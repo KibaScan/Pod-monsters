@@ -1,5 +1,20 @@
 # Pod Monsters SDK: Session Log History
 
+## 2026-05-30 — M-A3: Strength Session (Logger)
+- Files: `Sources/Core/Strength/Exercise.swift`, `Sources/Core/Strength/RoutineTemplate.swift`, `Sources/Core/Strength/StrengthPayload.swift`, `Sources/Core/Strength/StrengthHistory.swift`, `Sources/Core/Strength/StrengthSession.swift`, `Tests/PodMonstersTests/StrengthTests.swift`
+- Done:
+  - Exercise Library & Routine Templates: Implemented the basic data structures (`Exercise`, `RoutineTemplate`, `ExerciseTemplate`) under `Sources/Core/Strength/`.
+  - Conforming WellnessSession: Created the `StrengthSession` class conforming to the `WellnessSession` protocol (representing `.strength` sessions) with dynamic active logged exercises.
+  - Progressive Overload Prefill: Designed `StrengthHistory` to pre-fill active templates using historical session summaries and configurable load increments.
+  - Volumetric & PR Calculations: Embedded per-exercise total volume, absolute maximum weight, and Epley-based estimated 1RM calculations.
+  - Passive Signal Capture: Integrated tracking for passive rep tempos, rest durations, and heart rate samples, folding them into a customized effort envelope score on finalize.
+  - Comprehensive Test Suite: Added 5 comprehensive tests inside `StrengthTests.swift` validating all requirements (pre-fill, progressive-overload suggestions, PR calculations, effort envelope derivations, passive inputs, and serialization). Total test count: 160 → 165.
+  - Zero warnings under `swift build -Xswiftc -strict-concurrency=complete`.
+  - Zero existing files modified (strict guardrail satisfied).
+- Deferred: None.
+- Next: M-A4: Meditation Session pillar.
+- Gotchas: Keep StrengthSession isolated on @MainActor. Always decode extensible payload using standard type-safe codability.
+
 ## 2026-05-30 — M-A2: Wellness Session Core
 - Files: `Sources/Core/Session/SessionType.swift`, `Sources/Core/Session/WellnessSession.swift`, `Sources/Core/Session/SessionSummary.swift`, `Sources/Core/Session/EffortEnvelope.swift`, `Tests/PodMonstersTests/SessionTests.swift`, `docs/status/CURRENT.md`
 - Done:
