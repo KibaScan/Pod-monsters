@@ -1,5 +1,20 @@
 # Pod Monsters SDK: Session Log History
 
+## 2026-05-30 — M-A4: Meditation Session
+- Files: `Sources/Core/Mindfulness/BreathingPattern.swift`, `Sources/Core/Mindfulness/MeditationPayload.swift`, `Sources/Core/Mindfulness/MeditationSession.swift`, `Tests/PodMonstersTests/MeditationTests.swift`
+- Done:
+  - Breathing Patterns Configuration: Standardized `BreathingPattern` supporting standard patterns (4-7-8, Box, Resonant) and customized cycle timing phase calculations (inhale, hold, exhale).
+  - Conforming WellnessSession: Developed `@MainActor`-isolated `MeditationSession` conforming to `WellnessSession` representing `.meditation` sessions.
+  - Stillness & HRV Signals Ingestion: Supported capturing mockable stillness scores and high-fidelity HRV SDNN samples dynamically during the session.
+  - Relaxation Effort Envelope: Derived specialized `EffortEnvelope` that elevates focused, high-stillness sessions to `.verified` tier and computes a customized parasympathetic focus score.
+  - Mindful Minutes Accumulation: Designed precise cycle accumulation tracking and automatic duration-based fallback for mindful minutes.
+  - Comprehensive Test Suite: Wrote 4 robust test scenarios inside `MeditationTests.swift` confirming pattern timing calculations, manual cycle accumulation, envelope derivations, and Codable JSON serialization. Total test count: 165 → 170.
+  - Zero warnings under `swift build -Xswiftc -strict-concurrency=complete`.
+  - Zero existing files modified (strict guardrail satisfied).
+- Deferred: None.
+- Next: M-A5: Cardio Session pillar.
+- Gotchas: Keep MeditationSession strictly isolated on `@MainActor` and utilize standard type-safe payload codability.
+
 ## 2026-05-30 — M-A3: Strength Session (Logger)
 - Files: `Sources/Core/Strength/Exercise.swift`, `Sources/Core/Strength/RoutineTemplate.swift`, `Sources/Core/Strength/StrengthPayload.swift`, `Sources/Core/Strength/StrengthHistory.swift`, `Sources/Core/Strength/StrengthSession.swift`, `Tests/PodMonstersTests/StrengthTests.swift`
 - Done:
