@@ -5,7 +5,7 @@
 - **Passing Tests**: 160
 - **Failing Tests**: 0
 - **Architectural Decisions**: 5
-- **Current Branch**: m-a2-session-core
+- **Current Branch**: main
 
 ## Last Session (Current) — 2026-05-30 — M-A2: Wellness Session Core
 - Files: `Sources/Core/Session/SessionType.swift`, `Sources/Core/Session/WellnessSession.swift`, `Sources/Core/Session/SessionSummary.swift`, `Sources/Core/Session/EffortEnvelope.swift`, `Tests/PodMonstersTests/SessionTests.swift`, `docs/status/CURRENT.md`
