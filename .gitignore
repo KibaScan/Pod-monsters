@@ -24,5 +24,6 @@ test_output*.txt
 test_run.log
 
 # Internal agent/cli directories if they shouldn't be tracked
-.agents/
+.agents/*
+!.agents/skills/
 .antigravitycli/
